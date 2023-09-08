@@ -5,3 +5,4 @@ tests/e2e_test_framework/__pycache__/
 *.pyc
 venv/
 vendor/
+venv-pfsense/
