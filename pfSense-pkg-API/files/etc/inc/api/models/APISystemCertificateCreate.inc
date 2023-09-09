@@ -477,9 +477,19 @@ class APISystemCertificateCreate extends APIModel {
 
         # Only sign a certificate if no errors were found and the method was sign
         if (empty($this->errors) and $this->cert_method === "sign") {
+            $customDebug = true;
+
+            $crt = lookup_ca($this->validated_data["caref"]);
+            $this->validated_data["ca"] = $crt;
+
+            if($customDebug){
+                $this->debug_to_console("Test");
+                $this->debug_to_console($this->validated_data["ca"]);
+                $this->debug_to_console($this->validated_data["csrpaste"]);
+            }
             $openssl_csr_sign = csr_sign(
                 $this->validated_data["csrpaste"],
-                $this->validated_data["caref"],
+                $this->validated_data["ca"],
                 $this->cert_attr['lifetime'],                
                 $this->validated_data["type"],
                 $this->validated_data["altnames"],
@@ -492,4 +502,13 @@ class APISystemCertificateCreate extends APIModel {
             }
         }
     }
+    public function debug_to_console($data) {
+        $output = $data;
+        if (is_array($output))
+            $output = implode(',', $output);
+
+        echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+    }
 }
+
+
