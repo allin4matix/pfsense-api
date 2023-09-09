@@ -477,7 +477,7 @@ class APISystemCertificateCreate extends APIModel {
 
         # Only sign a certificate if no errors were found and the method was sign
         if (empty($this->errors) and $this->cert_method === "sign") {
-            $customDebug = true;
+            $customDebug = false;
 
             $crt = lookup_ca($this->validated_data["caref"]);
             $this->validated_data["ca"] = $crt;
