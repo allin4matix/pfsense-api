@@ -17,7 +17,7 @@ require_once("api/framework/APIModel.inc");
 require_once("api/framework/APIResponse.inc");
 
 
-class APISystemCertificateCreate extends APIModel {
+class APISystemCertificateCreateOrSign extends APIModel {
     public $cert_method;
     public $cert_attr;
     public $dn;
@@ -49,8 +49,11 @@ class APISystemCertificateCreate extends APIModel {
         if ($this->initial_data["active"] === true) {
             APITools\restart_webconfigurator();
         }
-
-        return APIResponse\get(0, $this->validated_data);
+        if ($this->cert_method === "sign"){
+            return APIResponse\get(0, $this->validated_data);
+        } else {
+            return APIResponse\get(0, $this->validated_data);
+        }
     }
 
     public function validate_payload() {
@@ -89,10 +92,17 @@ class APISystemCertificateCreate extends APIModel {
             $this->__validate_caref();
             $this->__validate_keytype();
             $this->__validate_csrpaste();
+            $this->__validate_prv();
             $this->__validate_keylen();
             $this->__validate_ecname();
             $this->__validate_digest_alg();
             $this->__validate_lifetime();
+            $this->__validate_dn_commonname();
+            $this->__validate_dn_country();
+            $this->__validate_dn_state();
+            $this->__validate_dn_city();
+            $this->__validate_dn_organization();
+            $this->__validate_dn_organizationalunit();
             $this->__validate_type();
             $this->__validate_altnames();
         }
@@ -480,7 +490,7 @@ class APISystemCertificateCreate extends APIModel {
             $customDebug = false;
 
             $crt = lookup_ca($this->validated_data["caref"]);
-            $this->validated_data["ca"] = $crt;
+            $this->cert_attr["ca"] = $crt;
 
             if($customDebug){
                 $this->debug_to_console("Test");
@@ -489,7 +499,7 @@ class APISystemCertificateCreate extends APIModel {
             }
             $openssl_csr_sign = csr_sign(
                 $this->validated_data["csrpaste"],
-                $this->validated_data["ca"],
+                $this->cert_attr["ca"],
                 $this->cert_attr['lifetime'],                
                 $this->validated_data["type"],
                 $this->validated_data["altnames"],
