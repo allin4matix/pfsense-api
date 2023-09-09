@@ -25,7 +25,7 @@ class APISystemCertificate extends APIEndpoint {
     }
 
     protected function post() {
-        return (new APISystemCertificateCreateOrSign())->call();
+        return (new APISystemCertificateCreate())->call();
     }
 
     protected function put() {

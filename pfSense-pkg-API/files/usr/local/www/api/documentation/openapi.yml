@@ -12486,7 +12486,7 @@ paths:
       tags:
         - System > Certificate
     post:
-      operationId: APISystemCertificateCreateOrSign
+      operationId: APISystemCertificateCreate
       description: 'Generate, Sign or import a new SSL/TLS certificate.<br><br>
 
         _Requires at least one of the following privileges:_ [`page-all`, `page-system-certmanager`]'

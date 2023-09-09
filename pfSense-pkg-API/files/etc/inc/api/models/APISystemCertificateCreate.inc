@@ -17,7 +17,7 @@ require_once("api/framework/APIModel.inc");
 require_once("api/framework/APIResponse.inc");
 
 
-class APISystemCertificateCreateOrSign extends APIModel {
+class APISystemCertificateCreate extends APIModel {
     public $cert_method;
     public $cert_attr;
     public $dn;
