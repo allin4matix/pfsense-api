@@ -26,7 +26,7 @@ class APISystemCertificateCreate extends APIModel {
     public function __construct() {
         parent::__construct();
         $this->privileges = ["page-all", "page-system-certmanager"];
-        $this->change_note = "Added certificate via API";
+        $this->change_note = "Added or sign certificate via API";
         $this->cert_method = null;
         $this->cert_attr = [];
         $this->dn = [];
@@ -88,17 +88,11 @@ class APISystemCertificateCreate extends APIModel {
         if ($this->cert_method === "sign") {
             $this->__validate_caref();
             $this->__validate_keytype();
-            $this->__validate_csrpaste;
+            $this->__validate_csrpaste();
             $this->__validate_keylen();
             $this->__validate_ecname();
             $this->__validate_digest_alg();
             $this->__validate_lifetime();
-            $this->__validate_dn_commonname();
-            $this->__validate_dn_country();
-            $this->__validate_dn_state();
-            $this->__validate_dn_city();
-            $this->__validate_dn_organization();
-            $this->__validate_dn_organizationalunit();
             $this->__validate_type();
             $this->__validate_altnames();
         }
@@ -483,8 +477,7 @@ class APISystemCertificateCreate extends APIModel {
 
         # Only sign a certificate if no errors were found and the method was sign
         if (empty($this->errors) and $this->cert_method === "sign") {
-            $openssl_create = csr_sign(
-                $this->validated_data,
+            $openssl_csr_sign = csr_sign(
                 $this->validated_data["csrpaste"],
                 $this->validated_data["caref"],
                 $this->cert_attr['lifetime'],                
@@ -494,7 +487,7 @@ class APISystemCertificateCreate extends APIModel {
             );
 
             # Check if OpenSSL failed to generate the certificate
-            if (!$openssl_create) {
+            if (!$openssl_csr_sign) {
                 $this->errors[] = APIResponse\get(1050);
             }
         }
