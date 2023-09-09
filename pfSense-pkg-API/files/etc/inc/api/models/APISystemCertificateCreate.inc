@@ -498,6 +498,7 @@ class APISystemCertificateCreate extends APIModel {
                 $this->debug_to_console($this->validated_data["csrpaste"]);
             }
             $openssl_csr_sign = csr_sign(
+                $this->validated_data,
                 $this->validated_data["csrpaste"],
                 $this->cert_attr["ca"],
                 $this->cert_attr['lifetime'],                

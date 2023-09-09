@@ -6,3 +6,5 @@ tests/e2e_test_framework/__pycache__/
 venv/
 vendor/
 venv-pfsense/
+pfSense-pkg-API-*.pkg
+localTests/
